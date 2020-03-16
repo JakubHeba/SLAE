@@ -34,6 +34,7 @@ set $i=100, set $j=200, call AddNumbers($i, $j)
 condition {numer breakpointa} {warunek, np. counter == 5} - breakpointy warunkowe, odpala się tylko po spełnieniu warunku
 define hook-stop - a następnie komendy, które chcemy wykonać po każdym STOP-ie, np. print/x $eax, disassemble $eip,+10, później wykonujemy nexti i obserwujemy efekt instrukcji po instrukcji
 display/x $eax - działa podobnie jak hook, dodajemy linijki które będą wykonywały się po każdej instrukcji
+
 -------------------------------------------------
 Instrukcje
 -------------------------------------------------
