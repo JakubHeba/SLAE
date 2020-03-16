@@ -1,3 +1,4 @@
+-------------------------------------------------
 GDB Commands
 -------------------------------------------------
 gdb /bin/bash - Podłączenie procesu pod GDB
@@ -126,7 +127,7 @@ PrintHelloWorld:
 	loop PrintHelloWorld
 -------------------------------------------------	
 JMP-CALL-POP exploit
-
+-------------------------------------------------
 Wykorzystywany, aby ominąć konieczność umieszczania adresu w shellcodzie, na przykład referencji do zmiennej. 
 
 section .text
@@ -146,6 +147,7 @@ Call_Shellcode:
 	HelloWorld db "Hello World!", 0xA
 -------------------------------------------------
 Kolejną techniką obejścia powyższego problemu jest wykorzystanie stacku (ESP)
+-------------------------------------------------
 Zerujemy EDX i wrzucamy go na stack:
 
 	xor edx, edx
@@ -163,6 +165,7 @@ Następnie, wrzucamy Top of the Stack (ESP) wskazujący na nasz 'Hello World' w 
 
 -------------------------------------------------
 Wykonywanie komend w shellcode. Metoda STACK:
+-------------------------------------------------
 
 	; wrzucamy null DWORD-a
 	xor eax, eax
@@ -186,16 +189,19 @@ Wykonywanie komend w shellcode. Metoda STACK:
 
 -------------------------------------------------
 OBJDUMP one liner hex extracter:
+-------------------------------------------------
 
 objdump -d ./xor-decoder|grep '[0-9a-f]:'|grep -v 'file'|cut -f2 -d:|cut -f1-6 -d' '|tr -s ' '|tr '\t' ' '|sed 's/ $//g'|sed 's/ /\\x/g'|paste -d '' -s |sed 's/^/"/'|sed 's/$/"/g'
 
 -------------------------------------------------
 GCC Compilation
+-------------------------------------------------
 
 gcc -fno-stack-protector -z execstack shellcode.c -o shellcode
 
 -------------------------------------------------
 Używanie MMX przy xorowaniu:
+-------------------------------------------------
 
 _start:
 	jmp short call_decoder
