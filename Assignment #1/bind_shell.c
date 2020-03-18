@@ -6,12 +6,8 @@
 
 int main(int argc, char **argv)
 {	
-	// sys_sockeet()	
+	// sys_socket()	
 	int bind_socket = socket(AF_INET, SOCK_STREAM, 0);
-	
-	// sys_setsocopt()
-	int option = 1;
-	setsockopt(bind_socket, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option));
 	
 	// sys_bind()
 	struct sockaddr_in address;
