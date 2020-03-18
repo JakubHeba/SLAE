@@ -10,7 +10,6 @@ global _start
 ; |  Linux Socketcall numbers:				|  /usr/include/linux/net.h		     	|
 ; |  Linux IP Protocols Declarations:		        |  /usr/include/netinet/in.h		      	|
 ; |  Linux System-specific socket constants and types:	|  /usr/include/i386-linux-gnu/bits/socket.h	|
-; |  Values for setsockopt():				|  /usr/include/asm-generic/socket.h		|
 ; -------------------------------------------------------------------------------------------------------
 
 section .text
@@ -41,25 +40,6 @@ sys_socket:
 	int 128				; syscall execution
     
 	mov edx, eax			; saving the bind_socket pointer for further usage
-
-sys_setsocopt:
-	; {C code} --> int option = 1;
-    	; {C code} --> setsockopt(bind_socket, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option));
-	
-	; syscall definition
-	mov al, 102			; syscall - socketcall
-	mov bl, 14		        ; socketcall type - sys_setsocopt
-
-	; pushing the sys_setsocopt arguments in reverse order (bind_socket, SOL_SOCKET, SO_REUSEADDR, &socklen_t, socklen_t)
-	push 4			        ; socklen_t size 
-	push esp		        ; pushing address of the socklen_t (from stack)
-	push 2			        ; SO_REUSEADDR = 2
-	push 1			        ; SOL_SOCKET = 1
-	push edx		        ; bind_socket pointer
-
-	mov ecx, esp			; directing the stack pointer to sys_setsocopt() function arguments
-
-	int 128				; syscall execution
 
 sys_bind:
 	; {C code} --> struct sockaddr_in address;
