@@ -17,11 +17,11 @@ section .text
 _start:
 
 cleaning:
-	  ; cleaning all registers for further usage
-	  xor eax, eax
-	  xor ebx, ebx
- 	  xor ecx, ecx
-	  xor edx, edx
+	; cleaning all registers for further usage
+	xor eax, eax
+	xor ebx, ebx
+ 	xor ecx, ecx
+	xor edx, edx
 
 sys_socket:
 	; {C code} --> int bind_socket = socket(AF_INET, SOCK_STREAM, 0);
