@@ -1,11 +1,14 @@
 import random
 
+# place for our final encoded shellcode
 final = ""
 
+# function which generates random integer from 1 to 255 for XOR-ing
 def numForXor():
 	randomInt = random.randint(1,255)
 	return randomInt
 
+# function which takes a byte and how much places to right shift and returns a correct value after that operation
 def rightShift(val, rot):
 	return ((val & 0xff) >> rot % 8 ) | (val << ( 8 - (rot % 8)) & 0xff)
 
@@ -20,6 +23,7 @@ print "\t-------------------------------------------------"
 print "\t| Byte    Operation   RandInt \t      \tResult  |"
 print "\t-------------------------------------------------"
 
+# loop for every byte in shellcode
 for x in bytearray(shellcode):
 	chosen = numForXor()
 
@@ -29,7 +33,7 @@ for x in bytearray(shellcode):
 
 	print "\t| \\x%x\t     xor       \\x%x\t  =      \\x%x\t|" % (x, chosen, x ^ chosen)
 
-	x = rightShiftclear((x ^ chosen),3)
+	x = rightShift(((x+13) ^ chosen),2)
 
 	# Appending byte from shellcode
 	final = final + "\\x%02x" % x
@@ -48,3 +52,7 @@ nasm = final.replace('\\x',',0x')
 
 print "\nNASM version of encoded shellcode: \n" + 100 * "-" + "\n%s " % nasm[1:]
 print 100 * "-"
+
+# in case of \xaa\xaa in generated encoded shellcode (very, very low chance), which is our decoders "STOP DECODING" tag
+if "\\xaa\\xaa" in final:
+	print "WARNING! You are extremely unlucky, because there are 2x \xaa in the encoded shellcode, that serve as a decoding end marker in the decoder. I suggest you repeat the generation of encoded shellcode."
