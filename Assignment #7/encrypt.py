@@ -8,6 +8,7 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
+# configuring variables for key generation
 passwd = "SLAE"
 password = passwd.encode()
 salt = b'%s' % os.urandom(16)
@@ -21,6 +22,7 @@ kdf = PBKDF2HMAC(
 )
 key = base64.urlsafe_b64encode(kdf.derive(password))
 
+# saving generated, unique key to the key.key file
 file = open('key.key','wb')
 file.write(key)
 file.close()
@@ -35,7 +37,8 @@ print(" ***  Fernet AES Encrypter.  ***")
 print("/--------------------------------/")
 
 print("\n\n*** Generated key: *** \n",30*'-',"\n", key.decode("utf-8"))
-        
+
+# Taking shellcode from argv and encrypting using generated key
 plaintext = bytes(sys.argv[1],'ascii')
 cipher = Fernet(key)
 ciphertext = cipher.encrypt(plaintext)
@@ -43,6 +46,7 @@ ciphertext = cipher.encrypt(plaintext)
 print("\n*** Original Shellcode: ***\n",30*"-","\n",sys.argv[1])           
 print("\n*** Data after encryption: ***\n",30*'-',"\n", ciphertext.decode("utf-8"))
 
+# Replacing encrypted shellcode value with hexadecimal values in python style
 shell = r"\x" + r"\x".join(ciphertext.hex()[n : n+2] for n in range(0, len(ciphertext.hex()), 2))
 print("\n*** Encrypted shellcode: ***\n",30*"-","\n",'"',shell,'"')
 
