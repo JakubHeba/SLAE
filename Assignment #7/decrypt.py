@@ -39,7 +39,7 @@ try:
 	ciph = bytearray.fromhex(sys.argv[1].replace('\\x','')).decode()
 	ciphAscii = bytes(ciph,'ascii')
 	cipher = Fernet(key)
-	deec = cipher.decrypt(ciphAscii)
+	dec = cipher.decrypt(ciphAscii)
 
 	# replacing decrypted shellcode value with hexadecimal values in python/c style
 	decrypted = str(dec)[2:-1].replace('\\\\','\\')
