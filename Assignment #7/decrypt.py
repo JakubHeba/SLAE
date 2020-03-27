@@ -37,12 +37,12 @@ time.sleep(1)
 try:
 	# Taking encrypted shellcode from argv and decrypting using key provided in key.key file
 	ciph = bytearray.fromhex(sys.argv[1].replace('\\x','')).decode()
-	ciphertext = bytes(ciph,'ascii')
+	ciphAscii = bytes(ciph,'ascii')
 	cipher = Fernet(key)
-	plaintext = cipher.decrypt(ciphertext)
+	deec = cipher.decrypt(ciphAscii)
 
 	# replacing decrypted shellcode value with hexadecimal values in python/c style
-	decrypted = str(plaintext)[2:-1].replace('\\\\','\\')
+	decrypted = str(dec)[2:-1].replace('\\\\','\\')
 
 except cryptography.exceptions.InvalidSignature: 
 	print("\nDecrypting failed! Wrong key. \n")
