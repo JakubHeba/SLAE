@@ -39,15 +39,15 @@ print("/--------------------------------/")
 print("\n\n*** Generated key: *** \n",30*'-',"\n", key.decode("utf-8"))
 
 # Taking shellcode from argv and encrypting using generated key
-plaintext = bytes(sys.argv[1],'ascii')
+plainAscii = bytes(sys.argv[1],'ascii')
 cipher = Fernet(key)
-ciphertext = cipher.encrypt(plaintext)
+ciphAscii = cipher.encrypt(plainAscii)
 
 print("\n*** Original Shellcode: ***\n",30*"-","\n",sys.argv[1])           
-print("\n*** Data after encryption: ***\n",30*'-',"\n", ciphertext.decode("utf-8"))
+print("\n*** Data after encryption: ***\n",30*'-',"\n", ciphAscii.decode("utf-8"))
 
 # Replacing encrypted shellcode value with hexadecimal values in python style
-shell = r"\x" + r"\x".join(ciphertext.hex()[n : n+2] for n in range(0, len(ciphertext.hex()), 2))
+shell = r"\x" + r"\x".join(ciphAscii.hex()[n : n+2] for n in range(0, len(ciphAscii.hex()), 2))
 print("\n*** Encrypted shellcode: ***\n",30*"-","\n",'"',shell,'"')
 
 
