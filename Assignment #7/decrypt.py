@@ -11,6 +11,7 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
+# opening key.key file with should be avaliable in the same folder
 file = open('key.key','rb')
 key = file.read()
 file.close()
@@ -34,11 +35,13 @@ time.sleep(1)
 print("1...")
 time.sleep(1)
 try:
+	# Taking encrypted shellcode from argv and decrypting using key provided in key.key file
 	ciph = bytearray.fromhex(sys.argv[1].replace('\\x','')).decode()
 	ciphertext = bytes(ciph,'ascii')
 	cipher = Fernet(key)
 	plaintext = cipher.decrypt(ciphertext)
 
+	# replacing decrypted shellcode value with hexadecimal values in python/c style
 	decrypted = str(plaintext)[2:-1].replace('\\\\','\\')
 
 except cryptography.exceptions.InvalidSignature: 
@@ -52,6 +55,7 @@ print("\nSuccess!\n")
 
 print("\n*** Decrypted shellcode: ***\n",30*"-","\n",decrypted,'\n',30*"-","\n")
 
+# Execution part. Let's create a shellcode.c file template with variable containing our decrypted value in python/c style
 execute = """
 #include<stdio.h>
 #include<string.h>
@@ -68,13 +72,17 @@ main()
 	ret();
 
 }"""
+
+# creating shellcode.c file
 cShellcode = open("shellcode.c","w")
 cShellcode.write(execute)
 cShellcode.close()
 
 decision = input("Would i try to execute a shellcode? [Y/N]  ")
 if decision.lower() == "y" or decision.lower() == "yes":
-	os.system("gcc -fno-stack-protector -z execstack -m32 shellcode.c -o shellcode")
+	# compilation and execution of our decrypted shellcode
+	os.system("gcc -fno-stack-protector -z execstack -m32 shellcode.c -o shellcode 2>/dev/null")
 	os.system("./shellcode")	
-	else:
+	# Pwned.
+else:
 	print("\nExiting then.\n")
