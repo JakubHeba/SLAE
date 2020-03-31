@@ -17,18 +17,19 @@ _hosts:
     int 0x80
 
     mov ebx, eax
-    sub al, 3
-
+    push 0x4
+    pop eax
+    
     jmp short _load_data
 
 _write:
     pop ecx
     mov dl, len
-    int 0x80        ;syscall to write in the file
+    int 0x80       
 
     push 1
     pop eax
-    int 0x80        ;syscall to exit
+    int 0x80      
 
 _load_data:
     call _write
